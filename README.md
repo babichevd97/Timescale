@@ -1,4 +1,4 @@
-# Temiscale usefull script
+# Temiscale usefull scripts
 
 Repository scructure:
 * SQL - analytics scripts, that will help you get along with your TSDB better
