@@ -1,6 +1,6 @@
 /*
 Author: Denis Babichev
-Date: 25.01.1997
+Date: 25.01.2023
 Description: This queries will help you analyze your Timescaledb table sizes, system information etc.
 You can find lots of best practices for query analysis on Timescaledb official doc page: https://docs.timescale.com/
 
