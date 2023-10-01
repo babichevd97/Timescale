@@ -4,6 +4,7 @@ import json
 import math
 import pandas as pd
 import subprocess
+import connections
 
 metrics = ["node_cpu_seconds_total",
 "protoBlockedBytesByApp",
@@ -96,13 +97,20 @@ metrics = ["node_cpu_seconds_total",
 "ifHCOutOctets",
 "ifHCInOctets"]
 
+
+##Get connections from connections.py
+connAN_STAGE_DC1=connections.connAN_STAGE_DC1
+connDN1_STAGE_DC1=connections.connDN1_STAGE_DC1
+
 #PROD_DC1
 print ('Start ssh')
-serverAN_TMP = SSHTunnelForwarder(('', 22),
-         ssh_username='',
-         ssh_password='',
-         remote_bind_address=('', 5432),
-         local_bind_address=('', 5454))
+serverAN_TMP = SSHTunnelForwarder(
+    ('', 22),
+    ssh_username='',
+    ssh_password='',
+    remote_bind_address=('', 5432),
+    local_bind_address=('', 5454)
+)
 serverAN_TMP.start()
 print ('Done ssh')
 
@@ -187,7 +195,6 @@ def makeValue(row):
             selectidCursor.close()
             connAN_TMP_PROM.close()
     return "(TIMESTAMPTZ \'%s\', \'%s\', \'%s\')" % (row[0], row[1], seriesId)
-
 
 
 def divide_chunks(l, n):

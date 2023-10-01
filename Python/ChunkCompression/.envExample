@@ -1,0 +1,43 @@
+##Fill your necessary params in here
+
+##Parameters for using SSH - tunnel
+#SSH Credentials, if needed
+SSH_USERNAME='admin'
+SSH_PASSWORD='password'
+SSH_HOST_FORWARD='128.0.0.1' #jump-server. Set connnections through it
+
+#SSH Access Node Credentials, if needed
+SSH_AN_HOST_REMOTE_BIND='128.0.0.1' #Remote host, get connection to it through SSH_HOST_FORWARD
+SSH_AN_PORT_REMOTE_BIND=5432 #Remote host port, which is needed to be bind
+SSH_AN_HOST_LOCAL_BIND='localhost' #host - adress where to bind our remote commection
+SSH_AN_PORT_LOCAL_BIND=5432 #localhost port bind where to bind our remote commection
+SSH_AN_PORT=22
+
+#SSH Data Node Credentials, if needed
+SSH_DN_HOST_REMOTE_BIND='128.0.0.1'
+SSH_DN_PORT_REMOTE_BIND=5432
+SSH_DN_HOST_LOCAL_BIND='localhost'
+SSH_DN_PORT_LOCAL_BIND=5433 #Theese ports must be UNIQUE, if we use only one jump-server
+SSH_DN_PORT=22
+
+##Parameters for using straight - conection
+#Access Node credentials, if needed.
+DB_AN_DATABASE='an_database'
+DB_AN_PORT=5432
+DB_AN_HOST='128.0.0.1' 
+DB_AN_USERNAME='admin'
+DB_AN_PASSWORD='password'
+
+#Data Node credentials, if needed
+DB_DN_DATABASE='dn_database'
+DB_DN_PORT=5432
+DB_DN_HOST='128.0.0.1'
+DB_DN_USERNAME='admin'
+DB_DN_PASSWORD='password'
+
+##VM params
+#vm hostname. Can differ, if you use ingress/local deployment/cluster or single-node configuration
+#In this example cluster configuration with vminsert will be considered
+VM_HOST='http://128.0.0.1' #Host for vminsert service
+VM_PORT='8480' #Host for vminsert service
+VM_INSERT_QUERY = 'insert/0/prometheus/api/v1/import' #json insert command for cluster configuration
