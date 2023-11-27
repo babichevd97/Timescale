@@ -1,5 +1,14 @@
 from sshtunnel import SSHTunnelForwarder
+from dotenv import load_dotenv
 import psycopg2
+import os
+import connections
+
+load_dotenv()
+
+##Get connections from connections.py
+connAN_STAGE_DC1=connections.connAN_STAGE_DC1
+connDN1_STAGE_DC1=connections.connDN1_STAGE_DC1
 
 class TSDB():
     def __init__(self, server):
@@ -40,12 +49,7 @@ class TSDB():
             res_query = ''
             for hypertable in hypertables_rules:
                 res_query='ALTER TABLE prom_data."{}" SET (timescaledb.compress, '.format(hypertable)
-                print(res_query)
-                print (hypertable)
-                print (hypertables_rules[hypertable])
-                print (hypertables_rules[hypertable]['segmentby_attr'])
-                print (hypertables_rules[hypertable]['orderby_attr'])
-
+                print (res_query)
                 if hypertables_rules[hypertable]['segmentby_attr']:
                     print ('segmentby_attr exists')
                     for ordertby in hypertables_rules[hypertable]['orderby_attr']:
@@ -59,37 +63,38 @@ class TSDB():
 
 #Start ssh_tunnel  if needed
 #AN server
-serverAN = SSHTunnelForwarder(('', 22),
-         ssh_username='',
-         ssh_password='',
-         remote_bind_address=('', 5432),
-         local_bind_address=('', 5432))
+serverAN = SSHTunnelForwarder(
+    (os.getenv('SSH_HOST_FORWARD'), int(os.getenv('SSH_AN_PORT'))),
+    ssh_username=os.getenv('SSH_USERNAME'),
+    ssh_password=os.getenv('SSH_PASSWORD'),
+    remote_bind_address=(os.getenv('SSH_AN_HOST_REMOTE_BIND'), int(os.getenv('SSH_AN_PORT_REMOTE_BIND'))),
+    local_bind_address=(os.getenv('SSH_AN_HOST_LOCAL_BIND'), int(os.getenv('SSH_AN_PORT_LOCAL_BIND'))))
 serverAN.start()
 
 #DN server
-serverDN = SSHTunnelForwarder(('', 22),
-         ssh_username='',
-         ssh_password='',
-         remote_bind_address=('', 5432),
-         local_bind_address=('', 5433))
+serverDN = SSHTunnelForwarder((os.getenv('SSH_HOST_FORWARD'), int(os.getenv('SSH_DN_PORT'))),
+         ssh_username=os.getenv('SSH_USERNAME'),
+         ssh_password=os.getenv('SSH_PASSWORD'),
+         remote_bind_address=(os.getenv('SSH_DN_HOST_REMOTE_BIND'), int(os.getenv('SSH_DN_PORT_REMOTE_BIND'))),
+         local_bind_address=(os.getenv('SSH_DN_HOST_LOCAL_BIND'), int(os.getenv('SSH_DN_PORT_LOCAL_BIND'))))
 serverDN.start()
 
 #Open connection to Database
 #AN server
 connAN = psycopg2.connect(
-    database='',
-    user='',
+    database=os.getenv('DB_AN_DATABASE'),
+    user=os.getenv('DB_AN_USERNAME'),
     host=serverAN.local_bind_host,
     port=serverAN.local_bind_port,
-    password='')
+    password=os.getenv('DB_AN_PASSWORD'))
 
 #DN server
 connDN = psycopg2.connect(
-    database='',
-    user='',
+    database=os.getenv('DB_DN_DATABASE'),
+    user=os.getenv('DB_DN_USERNAME'),
     host=serverDN.local_bind_host,
     port=serverDN.local_bind_port,
-    password='')
+    password=os.getenv('DB_DN_PASSWORD'))
 
 AnServer=TSDB(connAN)
 DnServer=TSDB(connDN)
